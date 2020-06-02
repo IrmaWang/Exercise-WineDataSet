@@ -17,6 +17,7 @@ View(wine)
 
 wine = wine[,-c(1,3)]                
 View(wine)    
+## the first part of the video finishes here. 
 
 # I want to see the top countries that produce wines in quantity by using arrange function
 wine %>% group_by(country) %>% 
@@ -91,6 +92,63 @@ top <- wine %>% group_by(country) %>%
 class(top)
 top <- as.character(top$country)
 top
+## Second part of the video finishes here.
 
+#  I want to combine the two data frame: top and 10 top mass production countries
+both <- intersect(top,selected_countries)
+both
 
+# I want to compare countries with top points and mass productions
+top <- top[1:10]
+both <- intersect(top, selected_countries)
+both
 
+# I want to explore which countries are not in selected_countries list 
+# but in top list, which means they produce high quality wine.
+not <- setdiff(top,selected_countries)
+not
+
+# I want to explore futher the grape variety  
+topwine <- wine %>% 
+  group_by(variety) %>% 
+  summarize(number = n()) %>% 
+  arrange(desc(number)) %>% 
+  top_n(10)
+topwine
+
+# Again, for future use, I'm converting this dataframe to a vector of characters
+topwine <- as.character(topwine$variety,names.arg=TRUE)
+topwine
+class(topwine)
+
+# I want to see which grape variety is highly rated
+wine %>% filter(variety %in% topwine) %>% 
+  group_by(variety) %>% 
+  summarize(median = median(points)) %>% 
+  ggplot(aes(reorder(variety,median),median))+
+  geom_col(aes(fill = variety))+
+  xlab("Variety")+
+  ylab("Median Point")
+
+wine %>% filter(variety %in% topwine) %>% 
+  group_by(variety) %>% 
+  summarize(median = median(points)) %>% 
+ ggplot(aes(reorder(variety,median),median))+
+  geom_col(aes(fill = variety))+
+  xlab("Variety")+
+  ylab("Median Point") + scale_x_discrete(labels = abbreviate())
+# my scale_x_discrete somehow is not working correctly.
+
+# I'm going to find the good quality wines that doesn't cost much by using intersect function
+
+top15p <- wine %>% 
+  arrange(desc(points)) %>% 
+  filter(points > quantile(points,prob = 0.85))
+
+cheapest15p <- wine %>% 
+  arrange(price) %>% 
+  head(nrow(top15p)) 
+goodvalue <- intersect(top15p,cheapest15p)
+goodvalue
+
+## Third part of introduction to dplyr is completed  
