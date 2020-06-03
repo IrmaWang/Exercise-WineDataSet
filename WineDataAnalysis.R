@@ -151,4 +151,6 @@ cheapest15p <- wine %>%
 goodvalue <- intersect(top15p,cheapest15p)
 goodvalue
 
-## Third part of introduction to dplyr is completed  
+## Third part of introduction to dplyr is completed
+# featuring in r
+
